@@ -22,6 +22,6 @@
 </svelte:head>
 
 <Toast />
-<main class="grid place-items-center w-screen h-screen md:p-8 lg:p-16">
+<main class="grid place-items-center w-full md:px-8 lg:px-16 md:py-4">
   <slot />
 </main>
