@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Avatar } from '$lib/types'
-  import { localStorageStore } from '@skeletonlabs/skeleton'
+  import { localStorageStore, getToastStore } from '@skeletonlabs/skeleton'
   import type { Conversations, ChatMessage } from '$lib/types'
   import type { Writable } from 'svelte/store'
   import type { Language } from '$lib/types'
@@ -11,6 +11,15 @@
 
   export let language: Language
   export let avatar: Avatar
+
+  const toastStore = getToastStore()
+
+  function errorToast(message: string) {
+    toastStore.trigger({
+      message,
+      background: 'variant-filled-error',
+    })
+  }
 
   const conversations: Writable<Partial<Conversations>> = localStorageStore(
     'langchat-conversations',
@@ -46,7 +55,7 @@
     loading = true
     const apiKey = localStorage.getItem('langchat-gpt-token')
     if (!apiKey) {
-      // Show toast
+      errorToast('Please enter your GPT-4-compatible API token above')
       loading = false
       return
     }
@@ -61,8 +70,7 @@
         avatar,
       )
     } catch (e: unknown) {
-      // Show toast
-      console.error(e)
+      errorToast('An error occurred while sending your message')
       loading = false
       return
     }

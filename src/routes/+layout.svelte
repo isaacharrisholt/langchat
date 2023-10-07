@@ -1,5 +1,8 @@
 <script lang="ts">
   import '../app.postcss'
+  import { initializeStores, Toast } from '@skeletonlabs/skeleton'
+
+  initializeStores()
 
   // Floating UI for Popups
   import {
@@ -18,6 +21,7 @@
   <title>LangChat</title>
 </svelte:head>
 
+<Toast />
 <main class="grid place-items-center w-screen h-screen md:p-8 lg:p-16">
   <slot />
 </main>
