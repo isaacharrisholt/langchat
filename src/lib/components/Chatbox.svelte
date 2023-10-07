@@ -71,6 +71,7 @@
       )
     } catch (e: unknown) {
       errorToast('An error occurred while sending your message')
+      console.error(e)
       loading = false
       return
     }

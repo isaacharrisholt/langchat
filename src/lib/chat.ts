@@ -18,7 +18,7 @@ function generateChat(
   }
 
   const historyTokenLimit = TOKEN_LIMIT - systemTokens.length - messageTokens.length
-  for (const historyMessage of history.reverse()) {
+  for (const historyMessage of [...history].reverse()) {
     chat.push(historyMessage)
     if (encodeChat(chat, MODEL).length > historyTokenLimit) {
       chat.pop()
@@ -58,9 +58,7 @@ function generateSystemPrompt(language: Language, avatar: Avatar): ChatMessage {
         You should also provide explanations of any ${language} words or phrases
         that the user may not understand.`
   } else {
-    prompt =
-        prompt + 
-        `\nRespond only with ${language} characters.`
+    prompt = prompt + `\nRespond only with ${language} characters.`
   }
 
   return {
