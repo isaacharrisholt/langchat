@@ -14,6 +14,6 @@
   storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow })
 </script>
 
-<main class="grid place-items-center w-screen h-screen p-8 lg:p-16 xl:p-24">
+<main class="grid place-items-center w-screen h-screen p-8 lg:p-16">
   <slot />
 </main>

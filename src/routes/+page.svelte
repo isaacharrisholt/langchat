@@ -51,7 +51,7 @@
     </div>
   </form>
   <div class="grid grid-cols-[auto_1fr]">
-    <div class="flex flex-col">
+    <div class="flex flex-col card variant-soft-surface">
       {#each avatars as avatar, i}
         <AvatarCard
           {avatar}
