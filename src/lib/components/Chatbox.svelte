@@ -6,6 +6,7 @@
   import type { Language } from '$lib/types'
   import AvatarImage from './AvatarImage.svelte'
   import { capitalise } from '$lib/utils'
+  import { tick } from 'svelte'
 
   export let language: Language
   export let avatar: Avatar
@@ -26,11 +27,23 @@
   $: {
     messages = $conversations[language]![avatar.name]
   }
+  let chatbox: HTMLDivElement
+
+  async function scrollChatbox(behavior?: ScrollBehavior) {
+    await tick()
+    chatbox?.scrollTo({ top: chatbox.scrollHeight, behavior })
+  }
+
+  $: {
+    avatar = avatar
+    scrollChatbox()
+  }
 
   async function sendMessage() {
     $conversations[language]![avatar.name].push({ role: 'user', content: newMessage })
     $conversations = $conversations
     newMessage = ''
+    await scrollChatbox('smooth')
   }
 
   async function handleKeypress(e: KeyboardEvent) {
@@ -45,7 +58,7 @@
 
 <div class="flex flex-col">
   <!-- Chatbox -->
-  <div class="w-full overflow-y-auto h-[60vh]">
+  <div class="w-full overflow-y-auto h-[60vh]" bind:this={chatbox}>
     <div class="card variant-soft-surface flex flex-col gap-4 items-center p-4">
       <AvatarImage {avatar} />
 
@@ -57,9 +70,17 @@
       <p>{avatar.description}</p>
     </div>
 
-    <div class="flex flex-col">
+    <div class="flex flex-col p-4 gap-4">
       {#each messages as message}
-        <div class="whitespace-pre-wrap">{message.content}</div>
+        {#if message.role === 'user'}
+          <div class="card variant-soft-tertiary p-2 max-w-[80%] self-end w-fit">
+            {message.content}
+          </div>
+        {:else if message.role === 'assistant'}
+          <div class="card variant-soft-primary p-2 max-w-[80%] self-start w-fit">
+            {message.content}
+          </div>
+        {/if}
       {/each}
     </div>
   </div>
