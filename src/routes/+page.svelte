@@ -3,6 +3,10 @@
   import type { Avatar } from '$lib/types'
   import AvatarCard from '$lib/components/AvatarCard.svelte'
   import Chatbox from '$lib/components/Chatbox.svelte'
+  import { LANGUAGES } from '$lib/types'
+  import { AVATARS } from '$lib/avatars'
+  import { capitalise } from '$lib/utils'
+  import { localStorageStore } from '@skeletonlabs/skeleton'
 
   onMount(() => {
     // Load token from local storage
@@ -15,29 +19,11 @@
     localStorage.setItem('langchat-gpt-token', token)
   }
 
-  const avatars: Avatar[] = [
-    {
-      name: 'Franklin',
-      imageUrl: 'https://avatars.dicebear.com/api/avataaars/franklin.svg',
-      difficulty: 'beginner',
-      description: 'Franklin is a beginner',
-    },
-    {
-      name: 'Eleanor',
-      imageUrl: 'https://avatars.dicebear.com/api/avataaars/eleanor.svg',
-      difficulty: 'intermediate',
-      description: 'Eleanor is an intermediate',
-    },
-    {
-      name: 'Isaac',
-      imageUrl: 'https://avatars.dicebear.com/api/avataaars/isaac.svg',
-      difficulty: 'advanced',
-      description: 'Isaac is your favourite YouTuber 😉',
-    },
-  ]
+  const selectedLanguage = localStorageStore('langchat-selected-language', LANGUAGES[0])
+  const activeAvatarIndex = localStorageStore('langchat-active-avatar-index', 0)
 
-  let activeAvatarIndex = 0
-  $: activeAvatar = avatars[activeAvatarIndex]
+  let activeAvatar: Avatar
+  $: activeAvatar = AVATARS[$selectedLanguage][$activeAvatarIndex]
 </script>
 
 <div class="card variant-soft-surface flex flex-col gap-8 w-full">
@@ -50,16 +36,25 @@
       >
     </div>
   </form>
+
+  <form>
+    <select name="language" class="select" bind:value={$selectedLanguage}>
+      {#each LANGUAGES as language}
+        <option value={language}>{capitalise(language)}</option>
+      {/each}
+    </select>
+  </form>
+
   <div class="grid grid-cols-[auto_1fr]">
     <div class="flex flex-col card variant-soft-surface">
-      {#each avatars as avatar, i}
+      {#each AVATARS[$selectedLanguage] ?? [] as avatar, i}
         <AvatarCard
           {avatar}
-          active={i === activeAvatarIndex}
-          on:click={() => (activeAvatarIndex = i)}
+          active={i === $activeAvatarIndex}
+          on:click={() => ($activeAvatarIndex = i)}
         />
       {/each}
     </div>
-    <Chatbox avatar={activeAvatar} language="japanese" />
+    <Chatbox avatar={activeAvatar} language={$selectedLanguage} />
   </div>
 </div>

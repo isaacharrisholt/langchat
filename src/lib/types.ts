@@ -5,18 +5,22 @@ export type Avatar = {
   description: string
 }
 
-export type Language =
-  | 'japanese'
-  | 'spanish'
-  | 'french'
-  | 'german'
-  | 'italian'
-  | 'portuguese'
-  | 'russian'
-  | 'esperanto'
-  | 'korean'
-  | 'mandarin'
-  | 'arabic'
+export const LANGUAGES = [
+  'japanese',
+  'spanish',
+  'french',
+  'german',
+  'dutch',
+  'italian',
+  'portuguese',
+  'russian',
+  'esperanto',
+  'korean',
+  'mandarin',
+  'arabic',
+] as const
+
+export type Language = (typeof LANGUAGES)[number]
 
 export type ChatMessage = {
   role: 'user' | 'assistant' | 'system'
