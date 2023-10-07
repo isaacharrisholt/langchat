@@ -7,6 +7,7 @@
   import AvatarImage from './AvatarImage.svelte'
   import { capitalise } from '$lib/utils'
   import { tick } from 'svelte'
+  import { sendChatMessage } from '$lib/chat'
 
   export let language: Language
   export let avatar: Avatar
@@ -39,11 +40,40 @@
     scrollChatbox()
   }
 
+  let loading = false
+
   async function sendMessage() {
-    $conversations[language]![avatar.name].push({ role: 'user', content: newMessage })
+    loading = true
+    const apiKey = localStorage.getItem('langchat-gpt-token')
+    if (!apiKey) {
+      // Show toast
+      loading = false
+      return
+    }
+
+    let messageResponse: ChatMessage
+    try {
+      messageResponse = await sendChatMessage(
+        newMessage,
+        $conversations[language]![avatar.name],
+        apiKey,
+        language,
+        avatar,
+      )
+    } catch (e: unknown) {
+      // Show toast
+      console.error(e)
+      loading = false
+      return
+    }
+    $conversations[language]![avatar.name].push(
+      { role: 'user', content: newMessage },
+      messageResponse,
+    )
     $conversations = $conversations
     newMessage = ''
     await scrollChatbox('smooth')
+    loading = false
   }
 
   async function handleKeypress(e: KeyboardEvent) {
@@ -73,11 +103,15 @@
     <div class="flex flex-col p-4 gap-4">
       {#each messages as message}
         {#if message.role === 'user'}
-          <div class="card variant-soft-tertiary p-2 max-w-[80%] self-end w-fit">
+          <div
+            class="card variant-soft-tertiary p-2 max-w-[80%] self-end w-fit whitespace-pre-line"
+          >
             {message.content}
           </div>
         {:else if message.role === 'assistant'}
-          <div class="card variant-soft-primary p-2 max-w-[80%] self-start w-fit">
+          <div
+            class="card variant-soft-primary p-2 max-w-[80%] self-start w-fit whitespace-pre-line"
+          >
             {message.content}
           </div>
         {/if}
@@ -86,17 +120,18 @@
   </div>
 
   <!-- Input -->
-  <div class="flex items-center gap-2">
+  <div class="flex items-center">
     <textarea
       name="message"
       placeholder="Enter your message..."
       bind:value={newMessage}
       class="textarea"
       on:keypress={handleKeypress}
+      disabled={loading}
     />
     <button
-      class="btn variant-filled-primary"
-      disabled={!newMessage}
+      class="btn variant-filled-primary h-full"
+      disabled={!newMessage || loading}
       on:click={sendMessage}>Send</button
     >
   </div>

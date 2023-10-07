@@ -28,7 +28,7 @@
 
 <div class="card variant-soft-surface flex flex-col gap-8 w-full">
   <form>
-    <label for="gpt-token">Enter your ChatGPT API token here</label>
+    <label for="gpt-token">Enter your GPT-4-compatible API token here</label>
     <div class="flex flex-row items-center">
       <input type="password" name="gpt-token" class="input" bind:value={token} />
       <button class="btn variant-filled-surface" type="button" on:click={saveToken}
