@@ -14,6 +14,10 @@
   storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow })
 </script>
 
+<svelte:head>
+  <title>LangChat</title>
+</svelte:head>
+
 <main class="grid place-items-center w-screen h-screen p-8 lg:p-16">
   <slot />
 </main>
