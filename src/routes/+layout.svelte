@@ -18,6 +18,6 @@
   <title>LangChat</title>
 </svelte:head>
 
-<main class="grid place-items-center w-screen h-screen p-8 lg:p-16">
+<main class="grid place-items-center w-screen h-screen md:p-8 lg:p-16">
   <slot />
 </main>

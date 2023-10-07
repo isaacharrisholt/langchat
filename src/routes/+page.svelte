@@ -26,8 +26,8 @@
   $: activeAvatar = AVATARS[$selectedLanguage][$activeAvatarIndex]
 </script>
 
-<div class="card variant-soft-surface flex flex-col gap-8 w-full">
-  <form>
+<div class="card variant-soft-surface flex flex-col gap-2 md:gap-8 w-full">
+  <form class="p-2">
     <label for="gpt-token">Enter your GPT-4-compatible API token here</label>
     <div class="flex flex-row items-center">
       <input type="password" name="gpt-token" class="input" bind:value={token} />
@@ -37,7 +37,8 @@
     </div>
   </form>
 
-  <form>
+  <form class="p-2">
+    <label for="language">Choose a language to chat in</label>
     <select name="language" class="select" bind:value={$selectedLanguage}>
       {#each LANGUAGES as language}
         <option value={language}>{capitalise(language)}</option>
@@ -45,8 +46,8 @@
     </select>
   </form>
 
-  <div class="grid grid-cols-[auto_1fr]">
-    <div class="flex flex-col card variant-soft-surface">
+  <div class="grid md:grid-cols-[auto_1fr]">
+    <div class="flex md:flex-col card variant-soft-surface overflow-auto snap-x">
       {#each AVATARS[$selectedLanguage] ?? [] as avatar, i}
         <AvatarCard
           {avatar}
