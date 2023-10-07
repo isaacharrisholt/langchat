@@ -57,6 +57,10 @@ function generateSystemPrompt(language: Language, avatar: Avatar): ChatMessage {
         
         You should also provide explanations of any ${language} words or phrases
         that the user may not understand.`
+  } else {
+    prompt =
+        prompt + 
+        `\nRespond only with ${language} characters.`
   }
 
   return {
